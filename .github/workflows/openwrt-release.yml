@@ -23,7 +23,7 @@ jobs:
       hiddify_version: ${{ steps.out.outputs.hiddify_version }}
       singbox_version: ${{ steps.out.outputs.singbox_version }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           repository: ${{ github.event_name == 'workflow_dispatch' && 'hiddify/hiddify-core' || github.repository }}
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag-name || github.ref_name }}
@@ -62,12 +62,14 @@ jobs:
           - { name: linux-armv7,       arch: arm,      goarm: "7",        naive: true }
           # Simple static builds (no naive outbound — cronet has no MIPS support)
           - { name: linux-mipsle-hf,   arch: mipsle,   gomips: hardfloat }
+          - { name: linux-mipsle-sf,   arch: mipsle,   gomips: softfloat }
+          - { name: linux-mips-sf,     arch: mips,     gomips: softfloat }
           - { name: linux-mips64-sf,   arch: mips64,   gomips: softfloat }
           - { name: linux-mips64le-sf, arch: mips64le, gomips: softfloat }
     env:
       CODE_VERSION: "-X github.com/hiddify/hiddify-core/v2/hcommon/constants.Version=${{ needs.calculate-version.outputs.hiddify_version }} -X github.com/sagernet/sing-box/constant.Version=${{ needs.calculate-version.outputs.singbox_version }}"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           repository: ${{ github.event_name == 'workflow_dispatch' && 'hiddify/hiddify-core' || github.repository }}
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag-name || github.ref_name }}
@@ -163,12 +165,16 @@ jobs:
             openwrt: "arm_cortex-a5_vfpv4 arm_cortex-a7_neon-vfpv4 arm_cortex-a7_vfpv4 arm_cortex-a8_vfpv3 arm_cortex-a9_neon arm_cortex-a9_vfpv3-d16 arm_cortex-a15_neon-vfpv4"
           - name: linux-mipsle-hf
             openwrt: "mipsel_24kc_24kf"
+          - name: linux-mipsle-sf
+            openwrt: "mipsel_24kc"
+          - name: linux-mips-sf
+            openwrt: "mips_24kc"
           - name: linux-mips64-sf
             openwrt: "mips64_mips64r2 mips64_octeonplus"
           - name: linux-mips64le-sf
             openwrt: "mips64el_mips64r2"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           repository: ${{ github.event_name == 'workflow_dispatch' && 'hiddify/hiddify-core' || github.repository }}
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag-name || github.ref_name }}
@@ -326,6 +332,8 @@ jobs:
           - linux-386
           - linux-armv7
           - linux-mipsle-hf
+          - linux-mipsle-sf
+          - linux-mips-sf
     steps:
       - name: Download binary
         uses: actions/download-artifact@v8
@@ -365,8 +373,12 @@ jobs:
             openwrt: "arm_cortex-a5_vfpv4 arm_cortex-a7_neon-vfpv4 arm_cortex-a7_vfpv4 arm_cortex-a8_vfpv3 arm_cortex-a9_neon arm_cortex-a9_vfpv3-d16 arm_cortex-a15_neon-vfpv4"
           - name: linux-mipsle-hf
             openwrt: "mipsel_24kc_24kf"
+          - name: linux-mipsle-sf
+            openwrt: "mipsel_24kc"
+          - name: linux-mips-sf
+            openwrt: "mips_24kc"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           repository: ${{ github.event_name == 'workflow_dispatch' && 'hiddify/hiddify-core' || github.repository }}
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag-name || github.ref_name }}
